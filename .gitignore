@@ -1,0 +1,9 @@
+.DS_Store
+.gradle/
+.idea/
+*.env.json
+*.bin
+/test*/
+/build/
+*/*.log
+/log

@@ -1,0 +1,76 @@
+{
+  "exception_class": "RangeError",
+  "solutions": [],
+  "glows": [],
+  "key": "VzLVMz3fUhbkrvydTRSyB5Zh9xXfKkTK",
+  "language": "javascript",
+  "message": "Exception:  \u003e Exception: ",
+  "notifier": "Flare JavaScript client v1.0.12",
+  "seen_at": "1676550086",
+  "sourcemap_version_id": "",
+  "stacktrace": [
+    {
+      "class_name": "JVM",
+      "code_snippet": {
+        "1": "java.lang.Exception",
+        "2": "\tat BackuperS3.Libs.RK.Tred.fdfd(Tred.java:22)",
+        "3": "\tat BackuperS3.Libs.RK.Tred.\u003cinit\u003e(Tred.java:13)",
+        "4": "\tat BackuperS3.Main.main(Main.java:12)"
+      },
+      "column_number": 1,
+      "file": "main",
+      "line_number": 1,
+      "method": "cli",
+      "trimmed_column_number": 500
+    },
+    {
+      "class_name": "BackuperS3.Libs.RK.Tred",
+      "code_snippet": {
+        "1": "public static void fdfd() throws Exception {",
+        "2": "    throw new Exception();",
+        "3": "}"
+      },
+      "column_number": 1,
+      "file": "Tred.java",
+      "line_number": 1,
+      "method": "fdfd",
+      "trimmed_column_number": 500
+    },
+    {
+      "class_name": "BackuperS3.Libs.RK.Tred",
+      "code_snippet": {
+        "1": "public Tred() throws Exception {",
+        "2": "    fdfd();",
+        "3": "}"
+      },
+      "column_number": 1,
+      "file": "Tred.java",
+      "line_number": 1,
+      "method": "\u003cinit\u003e",
+      "trimmed_column_number": 500
+    },
+    {
+      "class_name": "BackuperS3.Main",
+      "code_snippet": {},
+      "column_number": 1,
+      "file": "Main.java",
+      "line_number": 1,
+      "method": "main",
+      "trimmed_column_number": 500
+    }
+  ],
+  "context": {
+    "context": {},
+    "arguments": [],
+    "env": {},
+    "request": {
+      "readyState": "interactive",
+      "referrer": "",
+      "url": "http://localhost",
+      "useragent": "ru.adideas"
+    },
+    "cookies": {},
+    "headers": {},
+    "user": {}
+  }
+}
