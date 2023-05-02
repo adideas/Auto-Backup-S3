@@ -1,0 +1,11 @@
+| Command                        | About                                         |
+|--------------------------------|-----------------------------------------------|
+| help                           | Get help                                      |
+| {options} service              | Service start                                 |
+| install                        | Install service                               |
+| install > example.service      | Make example systemd service                  |
+
+| Options | About                                |
+|---------|--------------------------------------|
+| only-db | Configuration [Only Only Data Bases] |
+| only-fs | Configuration [Only File System]     |

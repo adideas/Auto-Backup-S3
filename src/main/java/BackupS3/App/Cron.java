@@ -10,8 +10,10 @@ import BackupS3.Configs.CronConfig;
 import BackupS3.Configs.Env;
 import BackupS3.Configs.IndexedFolderConfig;
 import BackupS3.Configs.MysqlConfig;
+import BackupS3.Interfaces.TypeTest;
 import BackupS3.Libs.Cron.Scheduler;
 import BackupS3.Libs.Cron.Timer;
+import BackupS3.Main;
 
 /**
  * The class contains the "CRON" configuration.
@@ -29,14 +31,18 @@ public class Cron extends CronHelper {
      * This method is used to configure "CRON".
      * @apiNote
      *      <li> To start, you need to call the {@link Cron#start()} method. </li>
-     * @since 1.0
+     * @since 1.1
      */
     @Override
     protected void handle() {
         // Delegation run command
-        Env.eachIndexedFolders(this::indexFolder);
+        if (Main.type.isOnlyFS()) {
+            Env.eachIndexedFolders(this::indexFolder);
+        }
         // Delegation run command
-        Env.eachMysqlConfigs(this::dumpMysql);
+        if (Main.type.isOnlyDB()) {
+            Env.eachMysqlConfigs(this::dumpMysql);
+        }
 
         // Log file only (verification in progress)
         this.everyTick((service) -> {

@@ -2,6 +2,9 @@ package BackupS3;
 
 import BackupS3.App.Cron;
 import BackupS3.Configs.Env;
+import BackupS3.Interfaces.Help;
+import BackupS3.Interfaces.TypeTest;
+import BackupS3.Interfaces.Resource;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,35 +14,54 @@ import java.util.function.Consumer;
 
 public class Main {
     private static final HashMap<String, Consumer<String[]>> actions = new HashMap<>(){{
-        put("service", Main::service);
-        put("make-env", Main::makeEnv);
         put("help", Main::help);
-        put("make-systemd", Main::makeSystemd);
+        put("service", Main::service);
+        put("install", Main::install);
+        // OPTIONS
+        put("only-db", Main::onlyDB);
+        put("only-fs", Main::onlyFS);
     }};
 
+    public static TypeTest type = TypeTest.ALL;
+
     public static void main(String[] args) {
-        if (args.length > 0 && actions.containsKey(args[0])) {
-            actions.get(args[0]).accept(Arrays.copyOfRange(args, 1, args.length));
+        if (args.length > 0) {
+            call(args);
         } else {
             help(new String[0]);
         }
     }
 
-    private static void service(String[] args) {
-        makeEnv(new String[0]);
-        Cron.start();
-
-        if (args.length > 0) { main(args); }
-    }
-
-    private static void makeEnv(String[] args) {
+    private static void call(String[] args) {
         if (args.length > 0) {
-            System.out.println("make-env without args");
+            if (actions.containsKey(args[0])) {
+                actions.get(args[0]).accept(Arrays.copyOfRange(args, 1, args.length));
+            } else {
+                System.err.println("Command not allowed! For help -> help");
+            }
         }
-        Env.createIfNotExists();
     }
 
-    private static void makeSystemd(String[] args) {
+    /**
+     * Service start
+     */
+    @Help(command = "service", description = "Service start")
+    private static void service(String[] args) {
+        Cron.start();
+        if (args.length > 0) { call(args); }
+    }
+
+    /**
+     * Print example systemd service
+     */
+    @Help(command = "install", description = "Install service")
+    private static void install(String[] args) {
+        if (args.length > 0) {
+            System.err.println("Options include in center [app {options} command]");
+        }
+
+        Env.createIfNotExists();
+
         Path folder = Paths.get(System.getProperty("user.dir"));
         String jar = "___";
 
@@ -49,49 +71,52 @@ public class Main {
 
         if (!jar.endsWith("jar")) jar = folder.resolve("???.jar").toString();
 
-        String[] lines = new String[]{
-                "",
-                "",
-                "[Unit]",
-                "Description=Backup S3 AWS",
-                "After=network.target",
-                "",
-                "[Service]",
-                "SuccessExitStatus=143",
-                "Type=simple",
-                "Restart=on-failure",
-                "RestartSec=10",
-                "",
-                "User=" + System.getProperty("user.name"),
-                "WorkingDirectory=" + folder,
-                "ExecStart=/bin/java -Xms128m -Xmx256m -jar " + jar + " service",
-                "StandardOutput=file:" + folder.resolve("system_service_output.log"),
-                "StandardError=file:" + folder.resolve("system_service_error.log"),
-                "",
-                "[Install]",
-                "WantedBy=multi-user.target",
-                "",
-                ""
-        };
-
-        System.out.println(String.join("\n", lines));
+        String finalJar = jar;
+        System.out.println(
+                Resource.read(
+                        Main.class.getResource("/service.form"),
+                        new HashMap<>() {{
+                            put("{{USER}}", System.getProperty("user.name"));
+                            put("{{WORKING_DIRECTORY}}", folder.toString());
+                            put("{{JAR_NAME}}", finalJar);
+                            put("{{ST_OUTPUT}}", folder.resolve("system_service_output.log").toString());
+                            put("{{ST_ERROR}}", folder.resolve("system_service_error.log").toString());
+                        }}
+                )
+        );
     }
 
+    /**
+     * Get help
+     */
+    @Help(command = "help", description = "Get help")
     private static void help(String[] args) {
         if (args.length > 0) {
-            System.out.println("help without args");
+            System.err.println("Options include in center [app {options} command]");
         }
 
         System.out.println("Config file: " + Env.path() + "\n");
 
-        System.out.println("""
-| Command                        | About                         |
-|--------------------------------|-------------------------------|
-| help                           | Get help                      |
-| make-env                       | Create default env            |
-| service                        | Service start                 |
-| make-systemd                   | Print example systemd service |
-| make-systemd > example.service | Make example systemd service  |
-                """);
+        System.out.println(Resource.read(Main.class.getResource("/help.form")));
+    }
+
+    /**
+     * Configuration for test [Only Data Bases]
+     */
+    @Help(command = "only-db", description = "Configuration for test [Only Data Bases]")
+    private static void onlyDB(String[] args)
+    {
+        type = TypeTest.ONLY_DB;
+        if (args.length > 0) { call(args); }
+    }
+
+    /**
+     * Configuration for test [Only File System]
+     */
+    @Help(command = "only-db", description = "Configuration for test [Only File System]")
+    private static void onlyFS(String[] args)
+    {
+        type = TypeTest.ONLY_FS;
+        if (args.length > 0) { call(args); }
     }
 }

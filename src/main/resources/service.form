@@ -1,0 +1,19 @@
+# LINUX make-systemd > example.service
+
+[Unit]
+Description=Backup S3 AWS
+After=network.target
+
+[Service]
+SuccessExitStatus=143
+Type=simple
+Restart=on-failure
+RestartSec=10
+# User={{USER}}
+# WorkingDirectory={{WORKING_DIRECTORY}}
+# ExecStart=/bin/java -Xms128m -Xmx256m -jar {{JAR_NAME}} service
+StandardOutput=file:{{ST_OUTPUT}}
+StandardError=file:{{ST_ERROR}}
+
+[Install]
+WantedBy=multi-user.target
