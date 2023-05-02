@@ -1,5 +1,6 @@
 package BackupS3.Configs;
 
+import BackupS3.App.Loggers.AppLogger;
 import BackupS3.Clients.Amazon.DTO.IAmazonAuthDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,6 +36,7 @@ public class Env {
             if (Files.exists(path())) {
                 try { return new Gson().fromJson(Files.readString(path()), Env.Store.class); } catch (Exception ignore) {}
             }
+            AppLogger.warn("ENV FILE NOT EXISTS");
             return new Env.Store();
         }
     }
@@ -164,7 +166,6 @@ public class Env {
     /**
      * This method create env file if not exist
      *
-     * @since 1.0
      * @apiNote Run this method with start app.
      * @throws IOException Save file
      * @since 1.0
@@ -185,6 +186,7 @@ public class Env {
         try {
             Path path = path();
             if (!Files.exists(path)) {
+                AppLogger.warn("ENV FILE NOT EXISTS");
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 Files.writeString(path, gson.toJson(store));
             }

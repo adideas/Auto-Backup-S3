@@ -46,7 +46,7 @@ public abstract class Scheduler extends Timer {
     protected boolean daily(long hourUTC, long minuteUTC, Consumer<ExecutorService> cronFunction) {
         long timeTask = (hourUTC * (60 * 60)) + (minuteUTC * 60);
 
-        if (time <= timeTask && timeTask < time + (periodInMinutes() * 60)) {
+        if (time <= timeTask && timeTask < time + (periodInSeconds() * 60)) {
             cronFunction.accept(service);
             return true;
         }

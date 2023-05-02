@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 @SuppressWarnings("ALL")
 public class SchedulerConfig {
     @SerializedName("MAX_THREAD") private Integer MAX_THREAD = 10;
-    @SerializedName("PERIOD_IN_MINUTES") private Integer PERIOD_IN_MINUTES = 5;
+    @SerializedName("PERIOD_IN_SECONDS") private Integer PERIOD_IN_SECONDS = 5;
 
     /**
      * This method gets the maximum number of threads
@@ -27,7 +27,7 @@ public class SchedulerConfig {
      * @return Interval between action
      * @since 1.0
      */
-    public Integer periodInMinutes() {
-        return this.PERIOD_IN_MINUTES;
+    public Integer periodInSeconds() {
+        return this.PERIOD_IN_SECONDS;
     }
 }

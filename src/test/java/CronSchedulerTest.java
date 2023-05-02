@@ -17,7 +17,7 @@ public class CronSchedulerTest {
         private int every = 0;
         @Override
         protected void handle() {
-            this.daily(0, periodInMinutes(), executorService -> {
+            this.daily(0, periodInSeconds(), executorService -> {
                 daily++;
             });
             this.everyTick(executorService -> {
@@ -26,12 +26,12 @@ public class CronSchedulerTest {
         }
 
         @Override
-        public long periodInMinutes() {
+        public long periodInSeconds() {
             return 5;
         }
 
         public void setTime() {
-            this.time = periodInMinutes() * 60;
+            this.time = periodInSeconds() * 60;
             run();
         }
 

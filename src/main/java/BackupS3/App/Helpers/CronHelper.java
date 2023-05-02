@@ -1,6 +1,7 @@
 package BackupS3.App.Helpers;
 
 import BackupS3.App.Cron;
+import BackupS3.App.Loggers.CronLogger;
 import BackupS3.Configs.CronConfig;
 import BackupS3.Configs.Env;
 import BackupS3.Configs.SchedulerConfig;
@@ -34,11 +35,11 @@ public abstract class CronHelper extends Scheduler {
      * This method gets the interval between action.
      *
      * @since 1.0
-     * @return Interval between action {@link Env#getSchedulerConfig()} {@link SchedulerConfig#periodInMinutes()}
+     * @return Interval between action {@link Env#getSchedulerConfig()} {@link SchedulerConfig#periodInSeconds()}
      */
     @Override
-    public long periodInMinutes() {
-        return Env.getSchedulerConfig().periodInMinutes();
+    public long periodInSeconds() {
+        return Env.getSchedulerConfig().periodInSeconds();
     }
 
     /**
@@ -75,22 +76,26 @@ public abstract class CronHelper extends Scheduler {
      * }}</pre>
      */
     public static void start() {
+        String number = String.valueOf((int)(Math.random() * 10000));
+
+        CronLogger.debug("[" + number + "] CRON START.");
+
         Cron cron = new Cron();
+        long period = cron.periodInSeconds();
+        long delay = 5L;
+
+        if (period < 60) {
+            delay = period / 5;
+        }
+
+        System.out.println(period);
+        System.out.println(delay);
 
         // Submits a periodic action that becomes enabled first after the given initial delay,
         // and subsequently with the given period.
         Executors.newSingleThreadScheduledExecutor()
-                .scheduleAtFixedRate(cron, 100, TO_SECOND(cron.periodInMinutes()), TimeUnit.MILLISECONDS);
-    }
+                .scheduleAtFixedRate(cron, delay, cron.periodInSeconds(), TimeUnit.SECONDS);
 
-    /**
-     * Convert minutes to second.
-     *
-     * @since 1.0
-     * @param minutes Number of minutes.
-     * @return Number of seconds.
-     */
-    private static long TO_SECOND(long minutes) {
-        return minutes * 60000;
+        CronLogger.debug("[" + number + "] CRON RUN.");
     }
 }

@@ -10,7 +10,7 @@ public class CronTimerTest {
         long time = testTimer.getTime();
         testTimer.run();
         assertNotEquals(time, testTimer.getTime(), "Time not run tick");
-        assertEquals((testTimer.periodInMinutes() * 60) + time, testTimer.getTime(), "Time not valid run tick");
+        assertEquals((testTimer.periodInSeconds() * 60) + time, testTimer.getTime(), "Time not valid run tick");
         assertEquals(testTimer.getRunHandle(), 1, "Not run handle");
 
         testTimer.setTime(0);
@@ -37,7 +37,7 @@ public class CronTimerTest {
         }
 
         @Override
-        public long periodInMinutes() {
+        public long periodInSeconds() {
             return 5;
         }
 

@@ -15,7 +15,7 @@ public class Cron extends Scheduler {
     }
 
     @Override
-    public long periodInMinutes() {
+    public long periodInSeconds() {
         return 1L; // 1 min
     }
 
@@ -31,7 +31,7 @@ public class Cron extends Scheduler {
                 .scheduleAtFixedRate(
                         cron,
                         100,
-                        periodInMinutes() * 60000, // 1 min
+                        periodInSeconds() * 60000, // 1 min
                         TimeUnit.MILLISECONDS
                 );
     }

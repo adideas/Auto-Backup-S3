@@ -46,13 +46,13 @@ public abstract class Timer implements Runnable {
     /**
      * Time update event
      * @apiNote
-     *  <li> Update {@link Timer#time} use {@link Timer#periodInMinutes()} </li>
+     *  <li> Update {@link Timer#time} use {@link Timer#periodInSeconds()} </li>
      *  <li> Update syncTick </li>
      * @since 1.0
      */
     private void tick() {
         // Auto increment time (add minutes)
-        this.time += this.periodInMinutes() * 60;
+        this.time += this.periodInSeconds() * 60;
         // Auto increment time sync
         this.syncTick[0]++;
 
@@ -66,7 +66,7 @@ public abstract class Timer implements Runnable {
     }
 
     /**
-     * ABSTRACT: This method is used to configure "CRON". See {@link Cron#handle()}
+     * ABSTRACT: This method is used to configure "CRON".
      *
      * @apiNote
      *      <li> To start, you need to call the {@link Cron#start()} method. </li>
@@ -75,8 +75,8 @@ public abstract class Timer implements Runnable {
     protected abstract void handle();
 
     /**
-     * ABSTRACT: This method gets the interval between action. See {@link CronHelper#periodInMinutes()}
+     * ABSTRACT: This method gets the interval between action. See {@link CronHelper#periodInSeconds()}
      * @return Interval between action.
      */
-    public abstract long periodInMinutes();
+    public abstract long periodInSeconds();
 }
