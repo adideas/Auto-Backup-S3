@@ -88,8 +88,7 @@ public abstract class CronHelper extends Scheduler {
             delay = period / 5;
         }
 
-        System.out.println(period);
-        System.out.println(delay);
+        System.out.println("PERIOD: " + period + "s. DELAY: " + delay + "s.");
 
         // Submits a periodic action that becomes enabled first after the given initial delay,
         // and subsequently with the given period.

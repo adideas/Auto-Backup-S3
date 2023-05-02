@@ -34,7 +34,7 @@ public class Cron extends CronHelper {
      */
     @Override
     protected void handle() {
-        System.out.println("Event");
+        System.out.println("Time: " + this.time);
         // Delegation run command
         if (Main.type.isOnlyFS()) {
             Env.eachIndexedFolders(this::indexFolder);
@@ -51,7 +51,6 @@ public class Cron extends CronHelper {
             CronLogger.info("[" + number + "] Cron tick event.");
             service.submit(() -> CronLogger.debug("[" + number + "] Cron task service run."));
         });
-        System.out.println("END Event");
     }
 
     /**
