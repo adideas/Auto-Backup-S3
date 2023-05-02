@@ -1,3 +1,1 @@
-
-rootProject.name = "BackuperS3"
-
+rootProject.name = "BackupS3"

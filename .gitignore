@@ -6,5 +6,6 @@
 /test*/
 /build/
 */*.log
+*.log
 /log
 /out

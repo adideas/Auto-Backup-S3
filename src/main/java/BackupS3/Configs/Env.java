@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings("ALL")
 public class Env {
-    protected final static String configFile = "BackupS3.env.json";
+    protected final static String configFile = ".env.json";
     private final static Store store = Store.getInstance();
 
     public static class Store {
@@ -49,6 +49,9 @@ public class Env {
      * @since 1.0
      */
     public static Path getLogFile() {
+        if (store == null || store.LOG == null) {
+            return Paths.get(System.getProperty("user.dir"), "defaultLog.log");
+        }
         return store.LOG.getLogFile();
     }
 
@@ -191,7 +194,7 @@ public class Env {
                 Files.writeString(path, gson.toJson(store));
             }
 
-            System.out.println(path.toFile().getAbsolutePath());
+            System.out.println("Config file: " + path.toFile().getAbsolutePath() + "\n");
         } catch (Exception error) {
             System.exit(1);
         }

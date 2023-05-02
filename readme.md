@@ -65,3 +65,24 @@ sudo systemctl daemon-reload
 sudo systemctl start ***.service
 sudo systemctl enable ***.service
 ```
+
+## Build jar
+Create an artifact configuration for the JAR (idea storm)
+
+1. From the main menu, select File | Project Structure (⌘ ;) and click Artifacts.
+2. Click the Add button, point to JAR and select From modules with dependencies.
+3. To the right of the Main Class field, click the Browse button and select HelloWorld (com.example.helloworld) in the dialog that opens.
+4. Apply the changes and close the dialog.
+5. From the main menu, select Build | Build Artifacts.
+
+## Build with Gradle
+
+```bash
+./gradlew fatJar
+```
+
+> /build/FatJar/***.jar
+
+```bash
+java -jar build/FatJar/BackupS3-1.1-FatJar.jar help
+```

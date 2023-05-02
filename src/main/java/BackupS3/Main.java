@@ -96,8 +96,6 @@ public class Main {
             System.err.println("Options include in center [app {options} command]");
         }
 
-        System.out.println("Config file: " + Env.path() + "\n");
-
         System.out.println(Resource.read(Main.class.getResource("/help.form")));
     }
 
