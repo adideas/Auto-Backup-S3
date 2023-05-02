@@ -1,6 +1,7 @@
 package BackupS3.Configs.Functions;
 
 import java.io.File;
+import java.nio.file.Files;
 
 /**
  * This interface declares a method TO_FILE.
@@ -18,6 +19,9 @@ public interface ConfigFileFunction {
      */
     default File TO_FILE(String file) {
         File object = new File(file);
+        try {
+            Files.write(object.toPath(), new byte[0]);
+        } catch (Exception ignore){}
         return object.exists() ? object : new File(System.getProperty("user.dir"), object.getName());
     }
 }
