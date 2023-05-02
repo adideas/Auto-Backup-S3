@@ -1,6 +1,7 @@
 package BackupS3;
 
 import BackupS3.App.Cron;
+import BackupS3.App.Loggers.CronLogger;
 import BackupS3.Configs.Env;
 import BackupS3.Interfaces.Help;
 import BackupS3.Configs.Cli.TypeTest;
@@ -25,6 +26,8 @@ public class Main {
     public static TypeTest type = TypeTest.ALL;
 
     public static void main(String[] args) {
+        Env.createIfNotExists();
+
         if (args.length > 0) {
             call(args);
         } else {
@@ -59,8 +62,6 @@ public class Main {
         if (args.length > 0) {
             System.err.println("Options include in center [app {options} command]");
         }
-
-        Env.createIfNotExists();
 
         Path folder = Paths.get(System.getProperty("user.dir"));
         String jar = "___";
@@ -106,6 +107,7 @@ public class Main {
     @Help(command = "only-db", description = "Configuration for test [Only Data Bases]")
     private static void onlyDB(String[] args)
     {
+        CronLogger.warn("ONLY_DB");
         type = TypeTest.ONLY_DB;
         if (args.length > 0) { call(args); }
     }
@@ -116,6 +118,7 @@ public class Main {
     @Help(command = "only-db", description = "Configuration for test [Only File System]")
     private static void onlyFS(String[] args)
     {
+        CronLogger.warn("ONLY_FS");
         type = TypeTest.ONLY_FS;
         if (args.length > 0) { call(args); }
     }
