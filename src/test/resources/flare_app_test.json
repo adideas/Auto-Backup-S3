@@ -1,0 +1,11 @@
+{
+  "class_name": "FlareAppTest$FlareAppExcTest",
+  "code_snippet": {
+    "1": "Test-description"
+  },
+  "column_number": 1,
+  "file": "FlareAppTest.java",
+  "line_number": 1,
+  "method": "makeError",
+  "trimmed_column_number": 500
+}

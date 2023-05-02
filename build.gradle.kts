@@ -12,6 +12,12 @@ repositories {
     mavenCentral()
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 dependencies {
     /** Amazon s3 client */
     implementation("com.amazonaws:aws-java-sdk:1.12.429")
