@@ -10,7 +10,6 @@ import BackupS3.Configs.CronConfig;
 import BackupS3.Configs.Env;
 import BackupS3.Configs.IndexedFolderConfig;
 import BackupS3.Configs.MysqlConfig;
-import BackupS3.Interfaces.TypeTest;
 import BackupS3.Libs.Cron.Scheduler;
 import BackupS3.Libs.Cron.Timer;
 import BackupS3.Main;

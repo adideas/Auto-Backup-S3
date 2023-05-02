@@ -1,4 +1,4 @@
-package BackupS3.Interfaces;
+package BackupS3.Configs.Cli;
 
 /**
  * Enum for configuration

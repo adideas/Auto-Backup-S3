@@ -3,8 +3,8 @@ package BackupS3;
 import BackupS3.App.Cron;
 import BackupS3.Configs.Env;
 import BackupS3.Interfaces.Help;
-import BackupS3.Interfaces.TypeTest;
-import BackupS3.Interfaces.Resource;
+import BackupS3.Configs.Cli.TypeTest;
+import BackupS3.Libs.ResourceLoader.Resource;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

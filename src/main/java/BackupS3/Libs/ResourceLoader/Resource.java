@@ -1,4 +1,4 @@
-package BackupS3.Interfaces;
+package BackupS3.Libs.ResourceLoader;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
