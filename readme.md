@@ -18,13 +18,19 @@ Amazon database and folder backup.
 
 
 ## Commands
-| Command                        | About                         |
-|--------------------------------|-------------------------------|
-| help                           | Get help                      |
-| make-env                       | Create default env            |
-| service                        | Service start                 |
-| make-systemd                   | Print example systemd service |
-| make-systemd > example.service | Make example systemd service  |
+| Command                        | About                                         |
+|--------------------------------|-----------------------------------------------|
+| help                           | Get help                                      |
+| {options} service              | Service start                                 |
+| install                        | Install service                               |
+| install > example.service      | Make example systemd service                  |
+
+
+## Commands
+| Options | About                                |
+|---------|--------------------------------------|
+| only-db | Configuration [Only Only Data Bases] |
+| only-fs | Configuration [Only File System]     |
 
 ## Install LINUX
 ### 1) Make service
