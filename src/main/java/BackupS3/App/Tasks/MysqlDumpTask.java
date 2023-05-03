@@ -35,10 +35,9 @@ public class MysqlDumpTask implements Callable<Void> {
      *
      * @param config MySQL config
      * @param function Action
-     * @throws SQLException If the connection is not established
      * @since 1.0
      */
-    public static void eachTables(MysqlConfig config, Consumer<Table> function) throws SQLException {
+    public static void eachTables(MysqlConfig config, Consumer<Table> function) {
         try {
             // Get auth data
             IMysqlAuthDTO auth = config.getAuth();
@@ -51,8 +50,10 @@ public class MysqlDumpTask implements Callable<Void> {
             for (Table table : tables) {
                 // If tables ignore
                 if (ignoreTables != null && ignoreTables.contains(table.name())) {
+                    MysqlLogger.info("Tables ignore [" + table.name() + "]");
                     continue;
                 }
+                MysqlLogger.info("Tables use [" + table.name() + "]");
                 // Action table
                 function.accept(table);
             }
@@ -96,9 +97,12 @@ public class MysqlDumpTask implements Callable<Void> {
 
                 if (file != null) {
                     this.sendFile(file);
+                } else {
+                    MysqlLogger.error("Error sendFile [" + table.database() + "." + table.name() + "]");
                 }
+            } else {
+                MysqlLogger.error("Error getConnection [" + table.database() + "." + table.name() + "]");
             }
-
         } catch (Exception error) {
             MysqlLogger.error("Error task dump [" + table.database() + "." + table.name() + "]");
             FlareLog.message(error, table.database() + "." + table.name());
@@ -146,7 +150,7 @@ public class MysqlDumpTask implements Callable<Void> {
     private void sendFile(IFile dump) {
         // If dump is virtual file
         if (!dump.isFile()) {return;}
-        Path zip = null;
+        Path zip;
 
         // Zip dump
         try {
