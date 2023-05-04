@@ -1,7 +1,7 @@
 package BackupS3.Libs.Cron;
 
-import BackupS3.App.Cron;
-import BackupS3.App.Helpers.CronHelper;
+import java.util.Calendar;
+import java.util.function.Function;
 
 /**
  * This class implements the action call timer.
@@ -12,24 +12,16 @@ import BackupS3.App.Helpers.CronHelper;
  * @version 1.0
  */
 public abstract class Timer implements Runnable {
-    /**
-     * Current time in unix time (in current day)
-     * @apiNote
-     *  <li> time = 1677674952501000 / 1000 = 1677674952501 </li>
-     *  <li> time = time MOD 86400 (86400 = 24 * 60 * 60) </li>
-     *  <li> time = 14901 (time in day) </li>
-     * @since 1.0
-     */
-    protected long time = (System.currentTimeMillis() / 1000) % 86400;
 
     /**
-     * Period sync
-     * @apiNote
-     *  <li> 0) Current tick </li>
-     *  <li> 1) Maximum tick for update time (default 10) </li>
-     * @since 1.0
+     * Current time
      */
-    private final int[] syncTick = new int[]{0, 10};
+    protected final Calendar now = Calendar.getInstance();
+    protected final Function<String, Boolean> validator;
+
+    public Timer(Function<Calendar, Function<String, Boolean>> validator) {
+        this.validator = validator.apply(now);
+    }
 
     /**
      * {@inheritDoc}
@@ -38,7 +30,7 @@ public abstract class Timer implements Runnable {
     @Override
     final public void run() {
         // Run action cron
-        this.handle();
+        this.handle(now);
         // Time update event
         this.tick();
     }
@@ -46,37 +38,22 @@ public abstract class Timer implements Runnable {
     /**
      * Time update event
      * @apiNote
-     *  <li> Update {@link Timer#time} use {@link Timer#periodInSeconds()} </li>
-     *  <li> Update syncTick </li>
+     *  <li> Update {@link Timer#now}  </li>
      * @since 1.0
      */
     private void tick() {
-        // Auto increment time (add minutes)
-        this.time += this.periodInSeconds() * 60;
-        // Auto increment time sync
-        this.syncTick[0]++;
-
-        // If it's time to sync
-        if (this.syncTick[0] > this.syncTick[1]) {
-            // Time synchronization
-            this.time = (System.currentTimeMillis() / 1000) % 86400;
-            // Reset sync period
-            this.syncTick[0] = 0;
+        long milliseconds = System.currentTimeMillis() - now.getTimeInMillis();
+        if (milliseconds >= 0L) {
+            now.add(Calendar.MILLISECOND, (int) milliseconds);
+        } else {
+            now.setTimeInMillis(System.currentTimeMillis());
         }
     }
 
     /**
      * ABSTRACT: This method is used to configure "CRON".
      *
-     * @apiNote
-     *      <li> To start, you need to call the {@link Cron#start()} method. </li>
      * @since 1.0
      */
-    protected abstract void handle();
-
-    /**
-     * ABSTRACT: This method gets the interval between action. See {@link CronHelper#periodInSeconds()}
-     * @return Interval between action.
-     */
-    public abstract long periodInSeconds();
+    protected abstract void handle(Calendar now);
 }

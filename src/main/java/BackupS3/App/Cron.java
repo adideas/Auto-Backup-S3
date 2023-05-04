@@ -14,18 +14,25 @@ import BackupS3.Libs.Cron.Scheduler;
 import BackupS3.Libs.Cron.Timer;
 import BackupS3.Main;
 
+import java.util.Calendar;
+import java.util.function.Function;
+
 /**
  * The class contains the "CRON" configuration.
  *
  * @author Alexey Vlasov <a href="https://github.com/adideas">github</a>
  * @apiNote
- *      <li> The configuration is described in the {@link Cron#handle()} method. </li>
+ *      <li> The configuration is described in the {@link Cron#handle(Calendar now)} method. </li>
  *      <li> To start, you need to call the {@link Cron#start()} method. </li>
  *
  *      <li> {@link Cron} <- {@link CronHelper} <- {@link Scheduler} <- {@link Timer} <- {@link Runnable} </li>
  * @version 1.0
  */
 public class Cron extends CronHelper {
+    public Cron(Function<Calendar, Function<String, Boolean>> validator) {
+        super(validator);
+    }
+
     /**
      * This method is used to configure "CRON".
      * @apiNote
@@ -33,8 +40,8 @@ public class Cron extends CronHelper {
      * @since 1.1
      */
     @Override
-    protected void handle() {
-        System.out.println("Time: " + this.time);
+    protected void handle(Calendar now) {
+        System.out.println("Time: " + now.getTimeInMillis());
         // Delegation run command
         if (Main.type.isOnlyFS()) {
             Env.eachIndexedFolders(this::indexFolder);
@@ -74,9 +81,11 @@ public class Cron extends CronHelper {
                             boolean isCreate = this.cron(
                                     config, service -> service.submit(new MysqlDumpTask(mysqlConfig, table))
                             );
+                            String name = mysqlConfig.getDatabaseName();
                             if (isCreate) {
-                                String name = mysqlConfig.getDatabaseName();
                                 CronLogger.info("MySQL dump - commit task [" + name + "." + table + "]");
+                            } else {
+                                CronLogger.warn("WARN MySQL dump - commit task [" + name + "." + table + "]");
                             }
                         }
                 );

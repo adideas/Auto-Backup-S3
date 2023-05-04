@@ -1,56 +1,78 @@
 import BackupS3.Libs.Cron.Timer;
+import BackupS3.Libs.Quartz.SimpleQuartz;
 import org.junit.jupiter.api.Test;
+
+import java.util.Calendar;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CronTimerTest {
     @Test
-    public void test() {
-        TestTimer testTimer = new TestTimer();
-        long time = testTimer.getTime();
+    public void testAdding() {
+        TestTimer testTimer = new TestTimer((now) -> {
+            SimpleQuartz simpleQuartz = new SimpleQuartz(now);
+            return simpleQuartz::validate;
+        });
+        Calendar time = Calendar.getInstance();
+
+        time.add(Calendar.SECOND, -100);
+        testTimer.setTime(time);
         testTimer.run();
-        assertNotEquals(time, testTimer.getTime(), "Time not run tick");
-        assertEquals((testTimer.periodInSeconds() * 60) + time, testTimer.getTime(), "Time not valid run tick");
+
+        assertEquals(
+                testTimer.getTime().getTimeInMillis() / 1000,
+                System.currentTimeMillis() / 1000,
+                "Time not valid run tick"
+        );
+
         assertEquals(testTimer.getRunHandle(), 1, "Not run handle");
+    }
 
-        testTimer.setTime(0);
+    @Test
+    public void testSync() {
+        TestTimer testTimer = new TestTimer((now) -> {
+            SimpleQuartz simpleQuartz = new SimpleQuartz(now);
+            return simpleQuartz::validate;
+        });
+        Calendar time = Calendar.getInstance();
 
-        boolean validSync = false;
-        for(int i = 0; i < 30; i++) {
-            testTimer.run();
-            if (testTimer.getTime() > time) {
-                validSync = true;
-                break;
-            }
-        }
+        time.add(Calendar.SECOND, 100);
+        testTimer.setTime(time);
+        testTimer.run();
+        testTimer.run();
 
-        assertTrue(validSync, "Invalid sync time");
+        assertEquals(
+                testTimer.getTime().getTimeInMillis() / 1000,
+                System.currentTimeMillis() / 1000,
+                "Time not valid run tick"
+        );
+
+        assertEquals(testTimer.getRunHandle(), 2, "Not run handle");
     }
 
     static class TestTimer extends Timer {
-
         private int runHandle = 0;
 
-        @Override
-        protected void handle() {
-            runHandle++;
+        public TestTimer(Function<Calendar, Function<String, Boolean>> validator) {
+            super(validator);
         }
 
-        @Override
-        public long periodInSeconds() {
-            return 5;
-        }
-
-        public long getTime() {
-            return time;
+        public Calendar getTime() {
+            return now;
         }
 
         public int getRunHandle() {
             return runHandle;
         }
 
-        public void setTime(int t) {
-            this.time = t;
+        public void setTime(Calendar calendar) {
+            this.now.setTimeInMillis(calendar.getTimeInMillis());
+        }
+
+        @Override
+        protected void handle(Calendar now) {
+            runHandle++;
         }
     }
 }
