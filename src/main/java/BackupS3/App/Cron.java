@@ -85,7 +85,7 @@ public class Cron extends CronHelper {
                             if (isCreate) {
                                 CronLogger.info("MySQL dump - commit task [" + name + "." + table + "]");
                             } else {
-                                CronLogger.warn("WARN MySQL dump - commit task [" + name + "." + table + "]");
+                                CronLogger.warn("WARN MySQL dump - NO commit task (CRON) [" + name + "." + table + "]");
                             }
                         }
                 );
