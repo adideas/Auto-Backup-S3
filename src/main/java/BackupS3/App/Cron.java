@@ -70,30 +70,22 @@ public class Cron extends CronHelper {
     private void dumpMysql(MysqlConfig mysqlConfig) {
         // Get cron config
         CronConfig config = mysqlConfig.getCronConfig();
-
         // If you use cron
         if (config.isUse()) {
-            try {
-                // Make task for tables
-                MysqlDumpTask.eachTables(
-                        mysqlConfig,
-                        table -> {
-                            boolean isCreate = this.cron(
-                                    config, service -> service.submit(new MysqlDumpTask(mysqlConfig, table))
-                            );
-                            String name = mysqlConfig.getDatabaseName();
-                            if (isCreate) {
+            this.cron(config, (executorService) -> {
+                try {
+                    // Make task for tables
+                    MysqlDumpTask.eachTables(mysqlConfig, table -> {
+                                String name = mysqlConfig.getDatabaseName();
                                 CronLogger.info("MySQL dump - commit task [" + name + "." + table + "]");
-                            } else {
-                                CronLogger.warn("WARN MySQL dump - NO commit task (CRON) [" + name + "." + table + "]");
-                            }
-                        }
-                );
-            } catch (Exception error) {
-                MysqlLogger.error(error.getMessage());
-                CronLogger.debug(error.toString());
-                FlareLog.message(error);
-            }
+                                executorService.submit(new MysqlDumpTask(mysqlConfig, table));
+                    });
+                } catch (Exception error) {
+                    MysqlLogger.error(error.getMessage());
+                    CronLogger.debug(error.toString());
+                    FlareLog.message(error);
+                }
+            });
         } else if (mysqlConfig.isUse()) {
             String name = mysqlConfig.getDatabaseName();
             CronLogger.warn("MySQL dump - error { CRON.USE = FALSE } [" + name + "]");
